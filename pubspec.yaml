@@ -23,8 +23,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  assets_audio_player: ^3.0.3+6
   cupertino_icons: ^1.0.2
   flutter_sound: ^8.3.9
+  intl: ^0.17.0
+  path: ^1.8.0
+  permission_handler: ^8.1.4+2
 
 dev_dependencies:
   flutter_test:
