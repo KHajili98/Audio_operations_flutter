@@ -53,12 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
     filePath = '/sdcard/Download/temp.wav';
     _myRecorder = FlutterSoundRecorder();
 
-    await _myRecorder!.openAudioSession(
-        focus: AudioFocus.requestFocusAndStopOthers,
-        category: SessionCategory.playAndRecord,
-        mode: SessionMode.modeDefault,
-        device: AudioDevice.speaker);
-    await _myRecorder!.setSubscriptionDuration(Duration(milliseconds: 10));
     await initializeDateFormatting();
 
     await Permission.microphone.request();
@@ -210,26 +204,38 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> record() async {
+    await _myRecorder!.openAudioSession(
+        focus: AudioFocus.requestFocusAndStopOthers,
+        category: SessionCategory.record,
+        mode: SessionMode.modeDefault,
+        device: AudioDevice.speaker);
+
+    await _myRecorder!.setSubscriptionDuration(Duration(milliseconds: 10));
     Directory dir = Directory(path.dirname(filePath!));
     if (!dir.existsSync()) {
       dir.createSync();
     }
-    _myRecorder!.openAudioSession();
-    await _myRecorder!.startRecorder(
-      toFile: filePath,
-      codec: Codec.pcm16WAV,
-    );
 
+    print("streamden evvel");
     StreamSubscription _recorderSubscription =
         _myRecorder!.onProgress!.listen((e) {
       var date = DateTime.fromMillisecondsSinceEpoch(e.duration.inMilliseconds,
           isUtc: true);
       var txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
+      print("salam stream");
 
       setState(() {
         _recorderTxt = txt;
+        print("salam setstate");
       });
     });
+
+    print("streamden sonra");
+
+    await _myRecorder!.startRecorder(
+      toFile: filePath,
+      codec: Codec.pcm16WAV,
+    );
     _recorderSubscription.cancel();
   }
 
